@@ -6,14 +6,24 @@ uses
   Classes, SysUtils, fgl, types;   //This unit must have the minimal dependencies.
 type
   //Column definition
+
+  { TDBColumn }
+
   TDBColumn = class
+  public
     name      : string;  //Column name.
     datatype  : string;  //Column data type.
-    dataTipeAd: string;  //Column data type additional
+    dataTipeAd: string;  {Column data type additional. It is the string enclosed by
+                         perentheses (if defined) after the type identifier. Can refer to:
+                         - String size.
+                         - Integer precisión.
+                         - Enumerated list. }
     nullable  : boolean; //Indicates if the column can be MULL.
     defaultStr: string;  //Default value for the column.
     comment   : string;  //Comment for the column.
     enumItems : TStringDynArray;  //Items for ENUM values
+    autoincrem: boolean;  //Indicates, the column is AUTO_INCREMENT
+    function VarCharSize: integer;
   end;
   TDBColumns = specialize TFPGObjectList<TDBColumn>;
 
@@ -77,6 +87,7 @@ type
     primary: TDBPrimaryKey;
     indexes: TDBIndexes;  //Not used by now
     constraints: TDBConstraints;
+    comment   : string;  //Comment for the column.
     function AddColumn(colName: string): TDBColumn;
     function AddIndex(columIndex: string): TDBIndex;
     function AddConstraint(conName: string; conType: TConstraintType): TDBConstraint;
@@ -108,6 +119,19 @@ type
 
 implementation
 
+{ TDBColumn }
+function TDBColumn.VarCharSize: integer;
+{Returns the size of a VARCHAR Column. For example if the colum type is: VARCHAR(10), the
+size will be 10.}
+var
+  sizeStr: String;
+begin
+  if UpCase(dataType) <> 'VARCHAR' then exit(0);
+  if dataTipeAd = '' then exit(32765);
+  if dataTipeAd[1] <> '(' then exit(32765);
+  sizeStr := copy(dataTipeAd, 2, length(dataTipeAd)-2);
+  exit(StrToInt(sizeStr));
+end;
 { TDBPrimaryKey }
 procedure TDBPrimaryKey.Clear;
 begin

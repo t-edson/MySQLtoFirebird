@@ -392,6 +392,9 @@ begin
         end else begin
           col.nullable := true;
         end;
+        if getTokenStr('AUTO_INCREMENT') then begin
+           col.autoincrem := true;
+        end;
         if getTokenStr('DEFAULT') then begin
            col.defaultStr := xCon.Token;
            xCon.Next;
@@ -405,9 +408,20 @@ begin
       end;
     end;
     if xCon.token = ')' then begin
+      //Terminó de forma normal.
+      xCon.Next;
+      if getTokenStr('ENGINE') then begin
+        if not getToken('=') then exit('Expected "=".');
+        xCon.Next;  //Ignora el parámetro
+      end;
+      if getTokenStr('COMMENT') then begin
+        //Comentario de tabla
+        if not getToken('=') then exit('Expected "=".');
+        table.comment := xCon.Token;
+      end;
       exit('');
     end else begin
-      exit('');
+      exit('Unexpected end of file. Expected "(".');
     end;
   end else begin  //No encontró
     exit('Table name expected');

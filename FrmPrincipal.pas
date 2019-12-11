@@ -11,6 +11,8 @@ type
 
   TForm1 = class(TForm)
     btnConvert: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
     Splitter1: TSplitter;
