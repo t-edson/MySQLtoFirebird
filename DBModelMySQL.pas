@@ -298,7 +298,8 @@ If error found, returns the error message.}
   end;
 
 var
-  tabName, tmp, refTab, Err, event, colName, colType, constName: string;
+  tabName, tmp, refTab, Err, event, colName, colType, constName,
+    localColumn: string;
   table, forTable: TDBTable;
   col, columnPK, columnFK: TDBColumn;
   cns: TDBConstraint;
@@ -343,9 +344,10 @@ begin
            cns := table.AddConstraint(constName, ctypFK);  //Add constraint
            //Add local columns
            if not getToken('(') then exit('Expected "(".');
-           if not getIdentfier(tmp) then exit('Identifier expected');
+           if not getIdentfier(localColumn) then exit('Identifier expected');
            if not getToken(')') then exit('Expected ")"');
-           columnFK := table.GetColumnByName(tmp);
+           //Verify if local columns exists in local table
+           columnFK := table.GetColumnByName(localColumn);
            if columnFK = nil then exit('PK column doesn''t exist.');
            cns.AddLocalColumn(columnFK);
            //Add foreign table
@@ -358,7 +360,8 @@ begin
            if not getToken('(') then exit('Expected "(".');
            if not getIdentfier(tmp) then exit('Identifier expected');
            if not getToken(')') then exit('Expected ")"');
-           columnFK := table.GetColumnByName(tmp);
+           //Verify if foreign columns exists in foreign table
+           columnFK := forTable.GetColumnByName(tmp);
            if columnFK = nil then exit('PK column doesn''t exist.');
            cns.AddForeignColumn(columnFK);
 
