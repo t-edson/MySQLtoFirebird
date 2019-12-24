@@ -1,19 +1,19 @@
 object Form1: TForm1
-  Left = 315
+  Left = 216
   Height = 654
-  Top = 129
-  Width = 1053
+  Top = 99
+  Width = 1188
   Caption = 'Convertidor MySQL a FIrebird'
   ClientHeight = 654
-  ClientWidth = 1053
+  ClientWidth = 1188
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '2.0.4.0'
   inline edFirebird: TSynEdit
-    Left = 519
+    Left = 509
     Height = 604
     Top = 0
-    Width = 534
+    Width = 509
     Align = alClient
     Font.Height = -13
     Font.Name = 'Courier New'
@@ -21,6 +21,7 @@ object Form1: TForm1
     Font.Quality = fqNonAntialiased
     ParentColor = False
     ParentFont = False
+    PopupMenu = PopupFirebird
     TabOrder = 0
     Gutter.Width = 33
     Gutter.MouseActions = <>
@@ -510,16 +511,16 @@ object Form1: TForm1
     Left = 0
     Height = 604
     Top = 0
-    Width = 514
+    Width = 504
     Align = alLeft
     ClientHeight = 604
-    ClientWidth = 514
+    ClientWidth = 504
     TabOrder = 1
     inline edMySQL: TSynEdit
       Left = 1
       Height = 602
       Top = 1
-      Width = 512
+      Width = 502
       Align = alClient
       Font.Height = -13
       Font.Name = 'Courier New'
@@ -1146,7 +1147,7 @@ object Form1: TForm1
     end
   end
   object Splitter1: TSplitter
-    Left = 514
+    Left = 504
     Height = 604
     Top = 0
     Width = 5
@@ -1155,10 +1156,10 @@ object Form1: TForm1
     Left = 0
     Height = 50
     Top = 604
-    Width = 1053
+    Width = 1188
     Align = alBottom
     ClientHeight = 50
-    ClientWidth = 1053
+    ClientWidth = 1188
     TabOrder = 3
     object btnConvert: TButton
       Left = 488
@@ -1190,6 +1191,43 @@ object Form1: TForm1
       Font.Height = -16
       ParentColor = False
       ParentFont = False
+    end
+  end
+  object Panel3: TPanel
+    Left = 1018
+    Height = 604
+    Top = 0
+    Width = 170
+    Align = alRight
+    ClientHeight = 604
+    ClientWidth = 170
+    TabOrder = 4
+    object ListBox1: TListBox
+      Left = 1
+      Height = 360
+      Top = 32
+      Width = 168
+      Font.Height = -16
+      ItemHeight = 0
+      OnClick = ListBox1Click
+      ParentFont = False
+      TabOrder = 0
+    end
+    object Label3: TLabel
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 103
+      Caption = 'Click to Copy script'
+      ParentColor = False
+    end
+  end
+  object PopupFirebird: TPopupMenu
+    left = 704
+    top = 248
+    object genCopy: TMenuItem
+      Caption = '&Copiar'
+      OnClick = genCopyClick
     end
   end
 end

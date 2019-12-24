@@ -24,6 +24,7 @@ type
     enumItems : TStringDynArray;  //Items for ENUM values
     autoincrem: boolean;  //Indicates, the column is AUTO_INCREMENT
     function VarCharSize: integer;
+    function BlobSize: integer;
   end;
   TDBColumns = specialize TFPGObjectList<TDBColumn>;
 
@@ -75,6 +76,8 @@ type
 
   TDBObject = class
     name: string;
+    scriptIni: TPoint;   //Location in script text.
+    scriptFin: TPoint;   //Location in script text.
   end;
   TDBObjects = specialize TFPGObjectList<TDBObject>;
 
@@ -132,6 +135,17 @@ begin
   sizeStr := copy(dataTipeAd, 2, length(dataTipeAd)-2);
   exit(StrToInt(sizeStr));
 end;
+function TDBColumn.BlobSize: integer;
+var
+  sizeStr: String;
+begin
+  if UpCase(dataType) <> 'BLOB' then exit(0);
+  if dataTipeAd = '' then exit(65535);
+  if dataTipeAd[1] <> '(' then exit(65535);
+  sizeStr := copy(dataTipeAd, 2, length(dataTipeAd)-2);
+  exit(StrToInt(sizeStr));
+end;
+
 { TDBPrimaryKey }
 procedure TDBPrimaryKey.Clear;
 begin

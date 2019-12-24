@@ -376,7 +376,7 @@ begin
         end;
       end else begin
         //Debe ser una columna común
-        if not getIdentfier(colName) then exit('Colum nname expected');  //Column name
+        if not getIdentfier(colName) then exit('Colum name expected');  //Column name
         col := table.AddColumn(colName);  //Add column
         //Get the column type
         if not getIdentfier(colType) then exit('Column type expected');  //Column name
