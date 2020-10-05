@@ -273,6 +273,7 @@ begin
   model.defaultCharset := xCon.Token;
   xCon.Next;
   if not getToken(';') then exit('Expected ";"');
+  exit('');
 end;
 function TMySQLScript.getCreateTableSQL(): string;
 {Read table definition, in the form CREATE TABLE...
@@ -457,7 +458,7 @@ begin
 
   model.scripts.Add('INSERT INTO ' + tabName + listColumns + ' VALUES ' + listValues + ';');
   if not getToken(';') then exit('Expected ";".');
-
+  exit('');
 end;
 procedure TMySQLScript.readScript(sqlIn: TStrings);
 {Read a script in the syntax of MySQL and losd it to the model.}
@@ -477,13 +478,13 @@ begin
       GetUntilNextLine;
     end else if StringLike(linea, 'SET *') then begin  //Filtra SET
       GetUntilNextLine;
-    end else if StringLike(linea, 'CREATE SCHEMA*') then begin     //Filtra comentarios
+    end else if StringLike(linea, 'CREATE SCHEMA*') then begin
       Err := getCreateSchemaSQL();
       if Err<>'' then begin
         MsgErr('Error en formato MySQL: ' + Err + '(line: %d)', [xCon.lex.GetY]);
         exit;
       end;
-    end else if StringLike(linea, 'USE *') then begin     //Filtra comentarios
+    end else if StringLike(linea, 'USE *') then begin
       GetUntilNextLine;
     end else if StringLike(linea, 'START *') then begin     //Start transaction
       GetUntilNextLine;

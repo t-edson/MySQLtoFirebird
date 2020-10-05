@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <isql_path Val="C:\Program Files\Firebird\Firebird_3_0\isql.exe"/>
+  <dbFilePath Val="C:\"/>
+  <sqltxt Val="CREATE TABLE IF NOT EXISTS `mydb`.`perfiles` (
+`idPerfil` VARCHAR(12) NOT NULL,
+`nombre` VARCHAR(16) NOT NULL,
+`descripcion` VARCHAR(45) NULL,
+PRIMARY KEY (`idPerfil`))
+ENGINE = InnoDB;
+"/>
+</CONFIG>

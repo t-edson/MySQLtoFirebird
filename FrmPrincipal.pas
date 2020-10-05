@@ -3,8 +3,8 @@ unit FrmPrincipal;
 interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Menus, SynEdit, SynFacilBasic, SynFacilHighlighter, DBModelMySQL, DBModel,
-  DBModelBase;
+  Menus, SynEdit, SynFacilBasic, SynFacilHighlighter, UnTerminal, DBModelMySQL,
+  DBModel, DBModelBase, MisUtils, FormConfig;
 
 type
 
@@ -12,6 +12,10 @@ type
 
   TForm1 = class(TForm)
     btnConvert: TButton;
+    btnPaste: TButton;
+    btnRunScript: TButton;
+    btnSettings: TButton;
+    Memo1: TMemo;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -25,9 +29,13 @@ type
     edMySQL: TSynEdit;
     edFirebird: TSynEdit;
     procedure btnConvertClick(Sender: TObject);
+    procedure btnPasteClick(Sender: TObject);
+    procedure btnRunScriptClick(Sender: TObject);
+    procedure btnSettingsClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure genCopyClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
   private
     model: TDBModel;
@@ -59,6 +67,7 @@ begin
   //Crea modelo
   model := TDBModel.Create(hlt1);
 end;
+
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   model.Destroy;
@@ -66,10 +75,12 @@ begin
   hlt1.Destroy;
 end;
 
-procedure TForm1.genCopyClick(Sender: TObject);
+procedure TForm1.FormShow(Sender: TObject);
 begin
-  edFirebird.CopyToClipboard;
+  Config.Initiate;
+  edMySQL.Text := Config.sqltxt;
 end;
+
 procedure TForm1.ListBox1Click(Sender: TObject);
 var
   nombTabla: String;
@@ -94,9 +105,12 @@ var
   tablaActual: TDBTable;
 begin
   model.ReadScriptFromMySQL(edMySQL.lines);
+  //Configura opciones
+  model.FireBirdScript.dbFilePath := Config.dbFilePath;
+  //Genera script
   model.WriteScriptFirebird(edFirebird.Lines);
   ListBox1.Clear;
-  //Explora script para ubciar definiciones de tablas
+  //Explora script para ubicar definiciones de tablas
   tablaActual := nil;
   for i:=0 to edFirebird.Lines.Count-1 do begin
     linea := edFirebird.Lines[i];
@@ -119,6 +133,34 @@ begin
   //end;
 end;
 
+procedure TForm1.btnPasteClick(Sender: TObject);
+begin
+  edMySQL.Text := '';
+  edMySQL.PasteFromClipboard;
+  btnConvertClick(nil);
+end;
+procedure TForm1.btnRunScriptClick(Sender: TObject);
+var
+  outStr: string;
+  proc: TConsoleProc;
+begin
+  StringToFile(edFirebird.Text, 'script.sql');
+  proc := TConsoleProc.Create(nil);
+  proc.RunInLoop(Config.isqlpath, ' -i script.sql', -1, outStr);
+  memo1.Text := outStr;
+  proc.Destroy;
+end;
+
+procedure TForm1.btnSettingsClick(Sender: TObject);
+begin
+  Config.ShowModal;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  Config.sqltxt := edMySQL.Text;  //Para salvar contenido
+  Config.SaveToFile;  //guarda la configuración actual
+end;
 
 end.
 

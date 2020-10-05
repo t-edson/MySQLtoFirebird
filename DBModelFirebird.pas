@@ -14,8 +14,8 @@ type
   TFirebirdScript = class
   private
     model: TDBModelBase;  //Reference to the model
-    //xCon: TContext;
   public
+    dbFilePath: string;   //Ruta para generar el nombre del archivo de la base de datos.
     procedure writeScript(sqlOut: TStrings);
     constructor Create(model0: TDBModelBase);
   end;
@@ -69,16 +69,20 @@ begin
   sqlOut.BeginUpdate;
   sqlOut.Clear;
 
-  sqlOut.Add('--SQL converted from MySQL script, generated from MySQL Workbench, to the Firebird syntax.');
+  sqlOut.Add('--Firebird SQL converted from MySQL script.');
+  sqlOut.Add('--Conversion made by MySQLtoFirebird.');
+  sqlOut.Add('--By Tito Hinostroza.');
   sqlOut.Add('');
 
-  if model.defaultCharset<>'' then begin
-    sqlOut.Add('CREATE DATABASE ''C:/' + model.dataBaseName + ''' ' +
-               'DEFAULT CHARACTER SET ' + model.defaultCharset + ';');
-    sqlOut.Add('');
-  end else begin
-    sqlOut.Add('CREATE DATABASE ''C:/' + model.dataBaseName + ''';');
-    sqlOut.Add('');
+  if model.dataBaseName<>'' then begin
+    if model.defaultCharset<>'' then begin
+      sqlOut.Add('CREATE DATABASE '''+ dbFilePath + model.dataBaseName + '.fdb'' ' +
+                 'DEFAULT CHARACTER SET ' + model.defaultCharset + ';');
+      sqlOut.Add('');
+    end else begin
+      sqlOut.Add('CREATE DATABASE ''C:/' + model.dataBaseName + ''';');
+      sqlOut.Add('');
+    end;
   end;
   //Database objects
   for obj in model.dbObjects do begin

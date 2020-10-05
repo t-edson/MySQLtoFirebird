@@ -11,10 +11,10 @@ type
     { TDBModel }
     TDBModel = class(TDBModelBase)
     private
-      MySQLScript: TMySQLScript;
-      FireBirdScript: TFirebirdScript;
       sqlLex: TSynFacilSyn;   //Reference to lexer for parser SQL
     public  //Input/Ouput
+      MySQLScript: TMySQLScript;
+      FireBirdScript: TFirebirdScript;
       procedure ReadScriptFromMySQL(sql: TSTrings);
       procedure WriteScriptFirebird(sql: TSTrings);
     public  //Initialization
